@@ -1,13 +1,105 @@
 # 11_epics_and_stories.md
 
 ## Rollen
-- **Nutzer** — will einen guten, nachvollziehbaren Tipp sehen
-- **Product Owner** — will Qualität, Determinismus und Transparenz sicherstellen
+- **Nutzer** — will den punkteoptimalen Kicktipp-Tipp mit Erklärung sehen
+- **Product Owner** — will Qualität, Transparenz und Punktemaximierung sicherstellen
 - **Entwickler** — will sauberen, testbaren, robusten Code
 
 ---
 
-## Sprint 0 — Walking Skeleton
+## Sprint 0 — Sofort-Tipp-Skript ⚡ (Deadline: 10.06.2026)
+
+- **US-00** `[Phase 0]` Als **Nutzer** möchte ich ein lauffähiges Python-Skript haben, das alle Kicktipp-Tipps (Spieltag 1 + alle 15 Sonderfragen) auf einmal berechnet und ausgibt, damit ich sie morgen vor Deadline eintragen kann.
+
+- **US-01** `[Phase 0]` Als **Entwickler** möchte ich die Kicktipp-Punktefunktion `pts(a,b,i,j)` korrekt implementiert haben (2–4 Punkte, Turnier-Regel, inkl. Unentschieden-Sonderfall), damit der Optimierer die richtigen Werte berechnet.
+
+- **US-02** `[Phase 0]` Als **Nutzer** möchte ich für jedes Spiel nicht nur den wahrscheinlichsten, sondern den **punkteoptimalen Tipp** sehen (`argmax E[pts]`), damit ich mehr Kicktipp-Punkte erhalte als mit einer naiven Vorhersage.
+
+- **US-03** `[Phase 0]` Als **Nutzer** möchte ich für alle 12 Gruppensieger-Fragen (A–L) eine datenbasierte Empfehlung mit Wahrscheinlichkeit sehen, damit ich alle 48 Punkte dieser Sonderfragen optimal abgreifen kann.
+
+- **US-04** `[Phase 0]` Als **Nutzer** möchte ich 4 Halbfinalisten-Empfehlungen und 1 Weltmeister-Empfehlung auf Basis einer Monte-Carlo-Simulation sehen, damit ich diese Sonderfragen datenbasiert beantworten kann.
+
+- **US-05** `[Phase 0]` Als **Nutzer** möchte ich eine Torschützenkönig-Team-Empfehlung sehen (Proxy: Angriffsstärke × erwartete Spiele), damit ich auch diese Sonderfrage nicht raten muss.
+
+---
+
+## Sprint 1 — Modulares Python-Kern-MVP
+
+- **US-06** `[Phase 1]` Als **Entwickler** möchte ich das Skript in Module aufgeteilt haben (`poisson.py`, `expected_points.py`, `tournament.py`, `data/`), damit der Code testbar und erweiterbar ist.
+
+- **US-07** `[Phase 1]` Als **Entwickler** möchte ich Elo-Ratings und Gruppen als JSON-Datendateien haben (nicht hardcoded im Code), damit Daten einfach aktualisiert werden können.
+
+- **US-08** `[Phase 1]` Als **Nutzer** möchte ich das Skript mit einem CLI-Argument aufrufen können (`python main.py --match "Deutschland Ecuador"`), damit ich jederzeit einen einzelnen Tipp berechnen kann.
+
+- **US-09** `[Phase 1]` Als **Entwickler** möchte ich Unit-Tests für die Punktefunktion haben (alle Grenzfälle: exaktes Ergebnis, Tordifferenz, Tendenz, Unentschieden, KO-Modus), damit Berechnungsfehler sofort auffallen.
+
+- **US-10** `[Phase 1]` Als **Entwickler** möchte ich eine leere `wm_results.json` als Platzhalter haben, damit Phase 2 (Bayesianisches Updating) nahtlos andocken kann.
+
+---
+
+## Sprint 2 — Bayesianisches Updating
+
+- **US-11** `[Phase 2]` Als **Nutzer** möchte ich dass das Modell nach jedem WM-Spieltag automatisch aktualisierte Stärke-Schätzungen verwendet, damit Spieltag-2-Tipps die tatsächliche WM-Form berücksichtigen.
+
+- **US-12** `[Phase 2]` Als **Entwickler** möchte ich die α-Gewichtung (`0 Spiele → 0.0, 1 → 0.40, 2 → 0.65, 3+ → 0.85`) als konfigurierbare Konstante implementiert haben, damit sie per Backtesting später optimiert werden kann.
+
+- **US-13** `[Phase 2]` Als **Entwickler** möchte ich den KO-Modus implementiert haben (Unentschieden-Masse wird proportional zur Elo-Siegwahrscheinlichkeit auf Sieger-Tipps umverteilt), damit Elfmeterschießen-Spiele korrekt behandelt werden.
+
+- **US-14** `[Phase 2]` Als **Nutzer** möchte ich im Output sehen, ob ein Tipp auf historischen Daten oder auf WM-Form basiert und wie viele WM-Spiele ein Team bereits gespielt hat, damit ich die Datengrundlage einschätzen kann.
+
+---
+
+## Sprint 3 — LLM-Erklärung
+
+- **US-15** `[Phase 3]` Als **Nutzer** möchte ich auch ohne LLM einen Tipp bekommen (Fallback auf Poisson-Modell allein), damit die App immer funktioniert.
+
+- **US-16** `[Phase 3]` Als **Nutzer** möchte ich eine verständliche Erklärung lesen, die klar unterscheidet zwischen: Modelldaten (Elo, WM-Form) und interpretativer Einschätzung (LLM), damit ich der Analyse vertrauen kann.
+
+- **US-17** `[Phase 3]` Als **Product Owner** möchte ich dass das LLM den berechneten Tipp niemals überschreibt — es erklärt nur, damit der Expected-Points-Optimizer immer die finale Entscheidung trifft.
+
+- **US-18** `[Phase 3]` Als **Product Owner** möchte ich optionale LLM-Metadaten (Verletzungen, Rotation, Motivation) als leichten kontrollierten Adjustment-Faktor (max. ±5%) einbauen können, damit qualitative Infos das Modell sinnvoll ergänzen.
+
+---
+
+## Sprint 4 — Web-App Frontend & Backend
+
+- **US-19** `[Phase 4]` Als **Nutzer** möchte ich ein schlichtes Web-Formular haben (Team A, Team B, Spielphase), damit ich Tipps ohne Kommandozeile berechnen kann.
+
+- **US-20** `[Phase 4]` Als **Nutzer** möchte ich den optimalen Tipp, E[pts], P(A/X/B), Top-3-Alternativen und die LLM-Erklärung übersichtlich dargestellt sehen.
+
+- **US-21** `[Phase 4]` Als **Nutzer** möchte ich eine Sonderfragen-Übersicht sehen (alle 15 Fragen mit aktuellen Empfehlungen und Wahrscheinlichkeiten), damit ich die Sondertipps jederzeit abrufen kann.
+
+- **US-22** `[Phase 4]` Als **Nutzer** möchte ich WM-Ergebnisse manuell eintragen können (einfaches Formular), damit das Bayesianische Updating ausgelöst wird ohne JSON-Dateien zu bearbeiten.
+
+- **US-23** `[Phase 4]` Als **Nutzer** möchte ich einen Ladezustand sehen während die Simulation läuft, und eine sinnvolle Fehlermeldung wenn das Backend nicht erreichbar ist.
+
+---
+
+## Sprint 5 — Live-Daten-Anbindung
+
+- **US-24** `[Phase 5]` Als **Entwickler** möchte ich einen Data-Service haben, der WM-Ergebnisse automatisch von einer Fußball-API abruft (nach Spielende), damit `wm_results.json` sich selbst aktuell hält.
+
+- **US-25** `[Phase 5]` Als **Entwickler** möchte ich Caching implementiert haben (Matchdaten 15 Min, Elo/Ranking 24h), damit API-Limits geschont werden.
+
+- **US-26** `[Phase 5]` Als **Nutzer** möchte ich im Frontend sehen welche Daten automatisch abgerufen wurden (Quelle, Zeitstempel), damit ich die Datenqualität einschätzen kann.
+
+---
+
+## Sprint 6 — Backtesting
+
+- **US-27** `[Phase 6]` Als **Entwickler** möchte ich historische WM-Daten (2014, 2018, 2022) als Testdatensatz haben und den Backtest-Service implementieren, der simulierte Kicktipp-Punkte berechnet.
+
+- **US-28** `[Phase 6]` Als **Product Owner** möchte ich `avg_kicktipp_pts` als Primärmetrik sehen (nicht nur 1X2-Accuracy), damit Modellverbesserungen am echten Spielziel gemessen werden.
+
+- **US-29** `[Phase 6]` Als **Product Owner** möchte ich ein neues Modell nur dann zum Standard machen, wenn es im Backtest einen höheren `avg_kicktipp_pts` erzielt als das aktuelle, damit Änderungen datenbasiert entschieden werden.
+
+---
+
+## Sprint 7 — MCP-ready Refactoring *(Post-WM)*
+
+- **US-30** `[Phase 7]` Als **Entwickler** möchte ich interne Tool-Interfaces definieren (Daten, Modell, Simulation), die austauschbar sind (JSON → API → MCP), damit das System langfristig erweiterbar bleibt.
+
+- **US-31** `[Phase 7]` Als **Product Owner** möchte ich dass der Expected-Points-Optimizer immer im Code bleibt (nie im LLM/MCP), damit die Zielfunktion deterministisch und prüfbar ist.
 
 - **US-00** `[E0/F-00]` Als **Entwickler** möchte ich ein laufendes React-Frontend und Express-Backend haben, die miteinander kommunizieren (hardcoded Response), damit der technische Stack bestätigt ist.
 

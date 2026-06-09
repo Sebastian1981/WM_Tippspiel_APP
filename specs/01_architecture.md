@@ -7,10 +7,12 @@ Die Anwendung besteht aus:
 2. Node/Express-Backend
 3. Data-Service
 4. Feature-Engineering-Service
-5. Prediction-Engine
-6. LLM-Metadata-Service
-7. Policy-/Ensemble-Engine
-8. optional später MCP-Server
+5. Poisson-Prediction-Engine
+6. Expected-Points-Optimizer
+7. Tournament-Simulation-Service (Monte-Carlo)
+8. LLM-Metadata-Service
+9. Policy-/Ensemble-Engine
+10. optional später MCP-Server
 
 ## MVP-Architektur
 
@@ -21,11 +23,13 @@ Express API
   ↓
 Prediction Orchestrator
   ↓
-Data Service
+Data Service (Elo-Ratings + WM-Ergebnisse)
   ↓
-Feature Engineering
+Poisson Model (lambda_A, lambda_B aus Elo + WM-Form)
   ↓
-Prediction Engine
+Expected-Points-Optimizer (argmax über 36 Tipps)
+  ↓
+Tournament Simulator (Monte-Carlo, Sonderfragen)
   ↓
 LLM Explanation Service
   ↓
@@ -58,12 +62,14 @@ Die finale Prognose wird nicht frei vom LLM erzeugt.
 Stattdessen gilt:
 
 ```
-Datenquellen liefern Rohdaten.
-Feature Engineering berechnet Kennzahlen.
-Prediction Engine berechnet Basismodelle.
-Policy Engine kombiniert Modelle.
-LLM extrahiert Metadaten und erklärt.
+Datenquellen liefern Elo-Ratings + WM-Ergebnisse.
+Poisson-Modell berechnet P(i,j) für alle Scorelines.
+Expected-Points-Optimizer wählt den punkteoptimalen Tipp.
+Tournament-Simulator liefert Sonderfrage-Empfehlungen.
+LLM extrahiert Metadaten und erklärt die Empfehlung.
 ```
+
+**Die Zielfunktion ist immer: Maximiere E[Kicktipp-Punkte], nicht P(wahrscheinlichstes Ergebnis).**
 
 ## Verantwortlichkeiten
 
@@ -94,10 +100,12 @@ LLM extrahiert Metadaten und erklärt.
 
 ### Prediction Engine
 
-- Berechnet Basismodell
-- Berechnet Formmodell
-- Berechnet optional Elo-/Ranking-Modell
-- Berechnet optional Odds-Modell
+- Berechnet Poisson-Torerwartungen aus Elo-Ratings
+- Wendet Bayesianisches Updating mit WM-Form an (α-Gewichtung)
+- Berechnet vollständige Score-Verteilung P(i,j)
+- Expected-Points-Optimizer: argmax_(a,b) E[pts(a,b)]
+- KO-Modus: Unentschieden-Masse auf Siegtipps umverteilen
+- Tournament-Simulator: Monte-Carlo über Gruppenphase + KO-Bracket
 
 ### Policy Engine
 
