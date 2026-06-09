@@ -3,27 +3,29 @@
 ## Zielarchitektur
 Die Anwendung besteht aus:
 
-1. React-Frontend
-2. Node/Express-Backend
-3. Data-Service
-4. Feature-Engineering-Service
-5. Poisson-Prediction-Engine
-6. Expected-Points-Optimizer
-7. Tournament-Simulation-Service (Monte-Carlo)
-8. LLM-Metadata-Service
-9. Policy-/Ensemble-Engine
-10. optional später MCP-Server
+1. React-Frontend (Vite)
+2. **Python/FastAPI-Backend** (statt Node/Express – wegen nativer scipy/numpy-Integration für Poisson-Modell)
+3. Data-Service (JSON-Datendateien, später API)
+4. Poisson-Prediction-Engine
+5. Expected-Points-Optimizer
+6. Tournament-Simulation-Service (Monte-Carlo)
+7. LLM-Metadata-Service
+8. optional später MCP-Server
+
+> **Architekturentscheidung:** Backend in Python/FastAPI statt Node/Express.
+> Begründung: Poisson-Modell und Monte-Carlo-Simulation nutzen scipy/numpy nativ.
+> Kein Portierungsaufwand, keine externe Abhängigkeit für Mathematik.
 
 ## MVP-Architektur
 
 ```
-React Frontend
-  ↓
-Express API
+React Frontend (Vite, localhost:5173)
+  ↓ HTTP
+FastAPI Backend (localhost:8000)
   ↓
 Prediction Orchestrator
   ↓
-Data Service (Elo-Ratings + WM-Ergebnisse)
+Data Service (elo_ratings.json + wm_results.json)
   ↓
 Poisson Model (lambda_A, lambda_B aus Elo + WM-Form)
   ↓
@@ -31,9 +33,34 @@ Expected-Points-Optimizer (argmax über 36 Tipps)
   ↓
 Tournament Simulator (Monte-Carlo, Sonderfragen)
   ↓
-LLM Explanation Service
+LLM Explanation Service (optional)
   ↓
-Response an Frontend
+JSON Response an Frontend
+```
+
+## Verzeichnisstruktur
+
+```
+WM_Tippspiel_APP/
+  specs/
+  backend/
+    main.py                  # FastAPI App + Endpunkte
+    requirements.txt
+    src/
+      data/
+        elo_ratings.json     # Elo-Ratings aller 48 Teams
+        groups.json          # Gruppen A-L
+        schedule.json        # Spielplan (alle Spieltage)
+        wm_results.json      # WM-Ergebnisse (wird befüllt)
+      model/
+        poisson.py           # Torerwartung + Score-Verteilung
+        bayesian_update.py   # α-gewichtetes WM-Form-Updating
+      optimizer/
+        expected_points.py   # Punktefunktion + argmax E[pts]
+      simulation/
+        tournament.py        # Monte-Carlo Gruppenphase + KO
+  frontend/
+    (React Vite App)
 ```
 
 ## Spätere MCP-ready Architektur

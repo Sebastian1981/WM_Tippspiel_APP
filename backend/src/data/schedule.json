@@ -1,0 +1,14 @@
+{
+  "matchday_1": [
+    {"date": "2026-06-11T21:00", "team_a": "Mexiko",     "team_b": "Südafrika",  "group": "A"},
+    {"date": "2026-06-12T04:00", "team_a": "Südkorea",   "team_b": "Tschechien", "group": "A"},
+    {"date": "2026-06-12T21:00", "team_a": "Kanada",     "team_b": "Bosnien",    "group": "B"},
+    {"date": "2026-06-13T03:00", "team_a": "USA",        "team_b": "Paraguay",   "group": "D"},
+    {"date": "2026-06-13T21:00", "team_a": "Katar",      "team_b": "Schweiz",    "group": "B"},
+    {"date": "2026-06-14T00:00", "team_a": "Brasilien",  "team_b": "Marokko",    "group": "C"},
+    {"date": "2026-06-14T03:00", "team_a": "Haiti",      "team_b": "Schottland", "group": "C"},
+    {"date": "2026-06-14T06:00", "team_a": "Australien", "team_b": "Türkei",     "group": "D"}
+  ],
+  "matchday_2": [],
+  "matchday_3": []
+}
