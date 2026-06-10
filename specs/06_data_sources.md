@@ -56,6 +56,32 @@ Die App soll Online-Daten verwenden können, aber auch mit Cache oder Mockdaten 
 | 14.06.2026 03:00 | Haiti | Schottland |
 | 14.06.2026 06:00 | Australien | Türkei |
 
+### Spielplan Spieltag 2
+
+| Datum | Team A | Team B | Gruppe |
+|---|---|---|---|
+| 14.06.2026 19:00 | Deutschland | Curaçao | E |
+| 14.06.2026 22:00 | Niederlande | Japan | F |
+| 15.06.2026 01:00 | Elfenbeinküste | Ecuador | E |
+| 15.06.2026 04:00 | Schweden | Tunesien | F |
+| 15.06.2026 18:00 | Spanien | Kap Verde | H |
+| 15.06.2026 21:00 | Belgien | Ägypten | G |
+| 16.06.2026 00:00 | Saudi-Arabien | Uruguay | H |
+| 16.06.2026 03:00 | Iran | Neuseeland | G |
+
+### Spielplan Spieltag 3
+
+| Datum | Team A | Team B | Gruppe |
+|---|---|---|---|
+| 16.06.2026 21:00 | Frankreich | Senegal | I |
+| 17.06.2026 00:00 | Irak | Norwegen | I |
+| 17.06.2026 03:00 | Argentinien | Algerien | J |
+| 17.06.2026 06:00 | Österreich | Jordanien | J |
+| 17.06.2026 19:00 | Portugal | DR Kongo | K |
+| 17.06.2026 22:00 | England | Kroatien | L |
+| 18.06.2026 01:00 | Ghana | Panama | L |
+| 18.06.2026 04:00 | Usbekistan | Kolumbien | K |
+
 ---
 
 ## Datenquellen-Typen
